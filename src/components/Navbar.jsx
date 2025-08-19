@@ -8,7 +8,7 @@ const Navbar = () => {
     const [IsMobile, setIsMobile] = useState(false);
 
   return (
-    <div className='flex justify-between items-center py-5 font-medium'>
+    <div className='sticky top-0 z-50 bg-white flex justify-between items-center py-5 font-medium'>
 
         <Link to='/'><img src={assets.logo} className='w-36' alt="" /></Link>
 
