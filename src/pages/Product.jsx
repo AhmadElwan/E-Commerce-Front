@@ -7,10 +7,11 @@ import RelatedProducts from '../components/RelatedProducts';
 const Product = () => {
 
   const {productId} = useParams();
-  const {products, currency} = useShopContext();
+  const {products, currency, addToCart} = useShopContext();
   const [productData, setProductData] = useState(false);
   const [image, setImage] = useState('');
   const [size, setSize] = useState('');
+  const [error, setError] = useState('');
 
   const fetchProductData = async () => {
     products.map((item) => {
@@ -27,6 +28,14 @@ const Product = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   },[productId, products])
 
+  const handleAddToCart = () => {
+    if (!size) {
+      setError('Please select a size before adding to cart.');
+      return;
+    }
+    setError('');
+    addToCart(productData._id, size);
+  }
 
   return productData ? (
     <div className='border-t-1 border-gray-600 pt-10 transition-opacity ease-in duration-500 opacity-100'>
@@ -65,12 +74,17 @@ const Product = () => {
               <div className='flex gap-2'>
                 {
                   productData.sizes.map((item, index) => (
-                    <button onClick={() => setSize(item)} key={index} className={`cursor-pointer border py-2 px-4 bg-gray-100 ${item === size ? 'border-orange-400' : ''}`}>{item}</button>
+                    <button onClick={() => { setSize(item); setError(''); }} key={index} className={`cursor-pointer border py-2 px-4 bg-gray-100 ${item === size ? 'border-orange-400' : ''}`}>{item}</button>
                   ))
                 }
               </div>
             </div>
-            <button className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700 cursor-pointer'>ADD TO CART</button>
+
+            <div className='flex items-center gap-4'>
+              <button type='button' onClick={handleAddToCart} className={`bg-black text-white px-8 py-3 text-sm cursor-pointer ${!size ? 'opacity-70' : 'active:bg-gray-700'}`}>ADD TO CART</button>
+              {error && <p className='text-red-600 text-sm' role='alert'>{error}</p>}
+            </div>
+
             <hr className='mt-8 sm:w-4/5'/>
             <div className='text-sm text-gray-500 mt-5 flex flex-col gap-1'>
                 <p>100% Original Product.</p>
