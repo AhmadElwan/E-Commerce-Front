@@ -3,10 +3,11 @@ import { useShopContext } from '../context/ShopContext';
 import { assets } from '../assets/frontend_assets/assets';
 import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
+import SearchBar from '../components/SearchBar';
 
 const Collection = () => {
 
-  const {products} = useShopContext();
+  const {products, search} = useShopContext();
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCategory] = useState([]);
@@ -31,6 +32,11 @@ const Collection = () => {
 
   const applyFilter = () => {
     let filteredProducts = products.slice();
+
+    if (search) {
+      filteredProducts = filteredProducts.filter((item) => item.name.toLowerCase().includes(search.toLowerCase()));
+    }
+
     if (category.length > 0) {
       filteredProducts = filteredProducts.filter((item) => category.includes(item.category));
     }
@@ -60,7 +66,7 @@ const Collection = () => {
 
   useEffect(() => {
     applyFilter();
-  },[category, subCategory])
+  },[category, subCategory, search])
 
   useEffect(() => {
     sortProducts();
@@ -109,16 +115,21 @@ const Collection = () => {
       </div>
 
       {/* Right Side (Collections Section) */}
-      <div className='flex-1'>
-        <div className='flex justify-between text-base sm:text-2xl mb-4'>
-          <Title text1={'ALL'} text2={'COLLECTIONS'}/>
+      <div className="flex-1">
+        <div className="flex justify-between items-center gap-4 text-base sm:text-2xl mb-4">
+          <Title text1={"ALL"} text2={"COLLECTIONS"} />
+          <SearchBar />
           {/* Product Sort */}
-          <select onChange={(e) => setSortType(e.target.value)} className='border-b-1 border-gray-300 text-sm px-2'>
+          <select
+            onChange={(e) => setSortType(e.target.value)}
+            className="border-b border-gray-300 text-sm px-2 py-1 outline-none bg-transparent"
+          >
             <option value="relevance">Sort by: Relevance</option>
             <option value="low-high">Sort by: Low to High</option>
             <option value="high-low">Sort by: High to Low</option>
           </select>
         </div>
+
 
         { /* Map Products */}
         <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6'>
